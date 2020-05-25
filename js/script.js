@@ -43,6 +43,7 @@ sendButton.addEventListener('click', function(evt){
 	if(myForm.elements.auto.checked == true){
 		console.log('Есть автомобиль')
 	}
+
 });
 
 
