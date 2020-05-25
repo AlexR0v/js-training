@@ -69,22 +69,54 @@ myButton.addEventListener('click' , () => {
 
 });
 
-const url1 = 'https://vbryanske.com/media/imgs2018/Kosmos.jpg';
-const url2 = 'https://wallscloud.net/uploads/cache/2845750753/outer-space-planets-1jRV-1024x576-MM-90.jpg';
-const url3 = 'https://avatars.mds.yandex.net/get-pdb/2821981/b77e2e70-74b3-4b1e-84bf-28e3090f56e4/s1200?webp=false';
+//вставка картинок через промисы
+const url1 = 'https://img1.goodfon.ru/original/2560x1600/f/65/landscape-planets-colors-view.jpg';
+const url2 = 'https://s1.1zoom.ru/big3/118/429618-Kycb.jpg';
+const url3 = 'http://co8tula.ru/upload/iblock/55d/55d842d20c79d572ef6b1d1c1635d8e7.jpg';
 
-const img = new Image();
-img.width = 500;
-img.src = url1;
+function loadImg(url){
+	return new Promise((resolve , reject) => {
+		const img = new Image();
+		img.width = 500;
+		img.src = url;
+		document.body.append(img);
+		img.addEventListener('load' , () => {
+			resolve();
+		});
+		img.addEventListener('error' , () => {
+			reject();
+		})
+	})
+}
 
-const img2 = new Image();
-img2.width = 500;
-img2.src = url2;
+loadImg(url1)
+	.then(() => {
+		loadImg(url2)
+	})
+	.then(() => {
+		loadImg(url3)
+	})
+	.catch(() => {
+		console.log('картинка не грузится')
+	});
+//загрузка списка по клику на кнопку
+const urlTown = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
+const myBtn = document.querySelector('#myBtn');
+const listTown = document.querySelector('#listTown');
 
-const img3 = new Image();
-img3.width = 500;
-img3.src = url3;
+myBtn.addEventListener('click' , async() => {
+	const response = await fetch(urlTown);
+	const cities = await response.json();
+	const fragment = document.createDocumentFragment();
 
-document.body.append(img);
-document.body.append(img2);
-document.body.append(img3);
+	for(const city of cities){
+		const li = document.createElement('li');
+		li.textContent = city.name;
+		li.addEventListener('click' , evt => {
+			console.log(evt.target.textContent)
+		});
+		fragment.appendChild(li);
+	}
+
+	listTown.appendChild(fragment)
+});
