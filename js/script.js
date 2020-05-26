@@ -143,3 +143,34 @@ loadButton.addEventListener('click', ()=>{
 		}
 	});
 });
+//Загрузка данный в формате JSON
+const loadButtonUsers = document.querySelector('#loadButtonUsers');
+const resultUsers = document.querySelector('#resultUsers');
+
+loadButtonUsers.addEventListener('click', ()=>{
+	const xhrUsers = new XMLHttpRequest();
+
+	xhrUsers.open('GET', 'users.json');
+	xhrUsers.responseType = 'json';
+	xhrUsers.send();
+	xhrUsers.addEventListener('load', ()=>{
+		if (xhrUsers.status >= 404) { //если файла нет или возникла ошибка
+			console.log('что то пошло не так')
+		} else {
+			const users = xhrUsers.response;
+
+			resultUsers.innerHTML = ''; //очищаем div
+			for(const user of users){
+				const userDom = createUsersDOM(user);
+				resultUsers.appendChild(userDom)
+			}
+		}
+	});
+});
+//функция создает div-элемент
+function createUsersDOM(user){
+	const div = document.createElement('div');
+	div.classList.add('user');
+	div.textContent = `${user.name} ${user.lastName}`;
+	return div;
+}
