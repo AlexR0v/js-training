@@ -125,3 +125,21 @@ myBtn.addEventListener('click' , async() => {
 
 	listTown.appendChild(fragment)
 });
+
+//Загрузка инофо из файла(имтация загрузки с сервера) без перезагрузки сраницы
+const loadButton = document.querySelector('#loadButton');
+const result = document.querySelector('#result');
+
+loadButton.addEventListener('click', ()=>{
+	const xhr = new XMLHttpRequest();
+
+	xhr.open('GET', 'content.txt');
+	xhr.send();
+	xhr.addEventListener('load', ()=>{
+		if (xhr.status >= 404) { //если файла нет или возникла ошибка
+			console.log('что то пошло не так')
+		} else {
+			result.innerHTML = xhr.responseText;
+		}
+	});
+});
