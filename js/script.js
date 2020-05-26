@@ -46,7 +46,7 @@ sendButton.addEventListener('click' , (evt) => {
 const myButton = document.querySelector('#myButton');
 const nameInput = document.querySelector('#nameInput');
 const list = document.querySelector('#list');
-
+//созадет элемент DOM
 myButton.addEventListener('click' , () => {
 	setTimeout(() => {
 		const newItem = document.createElement('li');
@@ -54,18 +54,18 @@ myButton.addEventListener('click' , () => {
 		newItem.classList.add('item');
 		newItem.textContent = nameInput.value;
 		deleteButton.textContent = 'Удалить';
-
+			//удаляет эелемент по клику на кнопку
 		deleteButton.addEventListener('click' , () => {
 			setTimeout(() => {
 				list.removeChild(newItem);
-			} , 500)
+			} , 500)//удаление с задержкой
 		});
 
 		newItem.appendChild(deleteButton);
 		list.appendChild(newItem);
 
 		nameInput.value = '';
-	} , 1000);
+	} , 1000);//загрузка с задержкой
 
 });
 
@@ -88,7 +88,7 @@ function loadImg(url){
 		})
 	})
 }
-
+//зарузка происходит по очередности
 loadImg(url1)
 	.then(() => {
 		loadImg(url2)
@@ -96,7 +96,7 @@ loadImg(url1)
 	.then(() => {
 		loadImg(url3)
 	})
-	.catch(() => {
+	.catch(() => {//выводит ошибку в консоль, что загрузка картинок не удалась
 		console.log('картинка не грузится')
 	});
 //загрузка списка по клику на кнопку
@@ -104,6 +104,14 @@ const urlTown = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/ci
 const myBtn = document.querySelector('#myBtn');
 const listTown = document.querySelector('#listTown');
 
+//делегирование кликов на загруженный список
+document.addEventListener('click', evt=>{
+	if(evt.target.tagName === 'LI') {
+		console.log(evt.target.textContent)
+	}
+});
+
+//загружает список
 myBtn.addEventListener('click' , async() => {
 	const response = await fetch(urlTown);
 	const cities = await response.json();
@@ -112,9 +120,6 @@ myBtn.addEventListener('click' , async() => {
 	for(const city of cities){
 		const li = document.createElement('li');
 		li.textContent = city.name;
-		li.addEventListener('click' , evt => {
-			console.log(evt.target.textContent)
-		});
 		fragment.appendChild(li);
 	}
 
