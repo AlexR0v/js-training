@@ -148,24 +148,23 @@ const loadButtonUsers = document.querySelector('#loadButtonUsers');
 const resultUsers = document.querySelector('#resultUsers');
 
 loadButtonUsers.addEventListener('click', ()=>{
-	const xhrUsers = new XMLHttpRequest();
-
-	xhrUsers.open('GET', 'users.json');
-	xhrUsers.responseType = 'json';
-	xhrUsers.send();
-	xhrUsers.addEventListener('load', ()=>{
-		if (xhrUsers.status >= 404) { //если файла нет или возникла ошибка
-			console.log('что то пошло не так')
-		} else {
-			const users = xhrUsers.response;
-
-			resultUsers.innerHTML = ''; //очищаем div
-			for(const user of users){
-				const userDom = createUsersDOM(user);
-				resultUsers.appendChild(userDom)
-			}
-		}
-	});
+		fetch('users.json')
+			.then(response => {
+				if(response.status >= 400){
+					return Promise.reject();
+				}
+				return response.json();
+			})
+			.then(users => {
+				for(const user of users){
+					const usersNode = createUsersDOM(user);
+					resultUsers.appendChild(usersNode);
+				}
+			})
+			.catch(()=>{
+				console.error('что-то пошло не так');
+			});
+	resultUsers.innerHTML = '';
 });
 //функция создает div-элемент
 function createUsersDOM(user){
@@ -174,3 +173,34 @@ function createUsersDOM(user){
 	div.textContent = `${user.name} ${user.lastName}`;
 	return div;
 }
+
+//localstorage
+const myName = document.querySelector('#myName');
+const bday = document.querySelector('#bday');
+const about = document.querySelector('#about');
+
+const save = document.querySelector('#save');
+const loadBtn = document.querySelector('#loadBtn');
+const iss = document.querySelector('#iss');
+
+let storage = localStorage;
+
+save.addEventListener('click', ()=>{
+	storage.data = JSON.stringify({
+		                              myName: myName.value,
+		                              bday: bday.value,
+		                              about: about.value
+	                              });
+});
+loadBtn.addEventListener('click', ()=>{
+	const data = JSON.parse(storage.data || '{}');
+	myName.value = data.myName || '';
+	bday.value = data.bday || '';
+	about.value = data.about || '';
+});
+iss.addEventListener('change', ()=>{
+	storage = iss.checked ? sessionStorage : localStorage;
+});
+window.addEventListener('storage', ()=> {
+	load.click();
+});
